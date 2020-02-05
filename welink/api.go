@@ -1,7 +1,7 @@
 package welink
 
 import (
-	// "encoding/json"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -100,6 +100,25 @@ func (a *API) ListDepartment(id int, recursive bool) (data Departments, err erro
 	}
 
 	return
+}
+
+// SyncDepartment ...
+func (a *API) SyncDepartment(data []DepartmentUp) error {
+	var req deptBatchReq
+	req.Data = data
+
+	buf, err := json.Marshal(&req)
+	if err != nil {
+		return err
+	}
+	var resp deptBatchResp
+	err = a.c.PostJSON(urlDeptSync, buf, &resp)
+	if err != nil {
+		logger().Infow("sync department fail", "err", err)
+		return err
+	}
+	logger().Infow("sync department ok", "resp", resp)
+	return nil
 }
 
 // ListUser ...

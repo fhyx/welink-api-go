@@ -24,6 +24,18 @@ type DepartmentUp struct {
 	Valid        int    `json:"valid,string"`
 }
 
+type deptBatchReq struct {
+	Data []DepartmentUp `json:"deptInfo"`
+}
+
+type deptBatchResp struct {
+	Data struct {
+		client.Error
+
+		CorpDeptID int `json:"corpDeptCode,string"`
+	} `json:"data"`
+}
+
 // Department 部门
 // "deptCode": "1",
 // "deptNameCn": "产品销售部",

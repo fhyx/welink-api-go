@@ -113,6 +113,7 @@ func (c *Client) GetJSON(uri string, obj interface{}) error {
 }
 
 func (c *Client) PostJSON(uri string, data []byte, obj interface{}) error {
+	c.ctype = "application/json"
 	body, err := c.Post(uri, data)
 	if err != nil {
 		return err

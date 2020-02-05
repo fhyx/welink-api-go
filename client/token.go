@@ -11,6 +11,7 @@ import (
 )
 
 type tokenReq struct {
+	Type       string `json:"type"`
 	CorpID     string `json:"client_id"`
 	CorpSecret string `json:"client_secret"`
 }
@@ -79,7 +80,13 @@ func (th *TokenHolder) GetAuthToken() (token string, err error) {
 }
 
 func (th *TokenHolder) requestToken() (token *Token, err error) {
-	body, _ := json.Marshal(&tokenReq{th.corpID, th.corpSecret})
+	treq := &tokenReq{
+		Type:       "e",
+		CorpID:     th.corpID,
+		CorpSecret: th.corpSecret,
+	}
+	logger().Debugw("request token", "corpID", th.corpID)
+	body, _ := json.Marshal(treq)
 	req, err := http.NewRequest("POST", th.uri, bytes.NewReader(body))
 	if err != nil {
 		return nil, err

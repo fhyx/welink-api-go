@@ -46,5 +46,5 @@ func TestUser(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("user %v", user)
+	logger().Infow("got", "user", user)
 }
