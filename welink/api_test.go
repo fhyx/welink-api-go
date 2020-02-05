@@ -41,8 +41,8 @@ func TestAPIDepartment(t *testing.T) {
 }
 
 func TestUser(t *testing.T) {
-
-	user, err := api.GetUser(os.Getenv("WELINK_TEST_UID"), "uid")
+	uid := os.Getenv("WELINK_TEST_UID")
+	user, err := api.GetUser(uid, "uid")
 	if err != nil {
 		t.Fatal(err)
 	}

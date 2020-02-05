@@ -3,7 +3,7 @@ package welink
 import (
 	// "time"
 
-	// "github.com/fhyx/welink-api-go/client"
+	"github.com/fhyx/welink-api-go/client"
 	"github.com/fhyx/welink-api-go/gender"
 )
 
@@ -68,7 +68,22 @@ type User struct {
 	Status       Status        `json:"userStatus,omitempty"`
 	Remark       string        `json:"remark,emitempty"`
 	Address      string        `json:"address,emitempty"`
-	IsActivated  uint8         `json:"isActivated,omitempty"`
-	Created      string        `json:"creationTime,omitempty"`
-	Updated      string        `json:"lastUpdatedTime,omitempty"`
+	Activated    uint8         `json:"isActivated,omitempty"`
+	Createds     string        `json:"creationTime,omitempty"`
+	Updateds     string        `json:"lastUpdatedTime,omitempty"`
+}
+
+func (u User) IsActived() bool {
+	return u.Status == SActived
+}
+
+func (u User) IsEnabled() bool {
+	return u.Activated == 1
+}
+
+type usersResponse struct {
+	client.Error
+
+	Total int    `json:"total"`
+	Users []User `json:"data"`
 }

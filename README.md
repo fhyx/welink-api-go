@@ -17,7 +17,7 @@ WELINK_TEST_UID='for unit test only'
 import "github.com/fhyx/welink-api-go/welink"
 
 
-api := NewAPI()
+api := NewAPI() // or New(appId, appSecret)
 
 deptId := 0
 recursive := false

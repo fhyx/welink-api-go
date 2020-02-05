@@ -12,7 +12,10 @@ import (
 const (
 	urlToken = "https://open.welink.huaweicloud.com/api/auth/v2/tickets"
 
-	urlUserGet = "https://open.welink.huaweicloud.com/api/contact/v1/users"
+	urlUserGet      = "https://open.welink.huaweicloud.com/api/contact/v1/users"
+	urlUserList     = "https://open.welink.huaweicloud.com/api/contact/v1/user/users"
+	urlUserListSimp = "https://open.welink.huaweicloud.com/api/contact/v2/user/userid"
+	urlUserBulk     = "https://open.welink.huaweicloud.com/api/contact/v1/users/bulk"
 
 	urlDeptList = "https://open.welink.huaweicloud.com/api/contact/v2/departments/list"
 	urlDeptSync = "https://open.welink.huaweicloud.com/api/contact/v2/departments/bulk"
@@ -99,40 +102,17 @@ func (a *API) ListDepartment(id int, recursive bool) (data Departments, err erro
 	return
 }
 
-// func (a *API) ListUser(deptId int, incChild bool) (data []User, err error) {
-// 	var token string
-// 	token, err = a.c.GetAuthToken()
-// 	if err != nil {
-// 		return
-// 	}
+// ListUser ...
+func (a *API) ListUser(deptId int) (data []User, err error) {
+	limit := 50
+	uri := fmt.Sprintf("%s?&deptCode=%d&pageSize=%d", urlUserList, deptId, limit)
 
-// 	fc := "0"
-// 	if incChild {
-// 		fc = "1"
-// 	}
-// 	uri := fmt.Sprintf("%s?access_token=%s&department_id=%d&fetch_child=%s", urlListUser, token, deptId, fc)
+	var ret usersResponse
+	err = a.c.GetJSON(uri, &ret)
 
-// 	var ret usersResponse
-// 	err = a.c.GetJSON(uri, &ret)
+	if err == nil {
+		data = ret.Users
+	}
 
-// 	if err == nil {
-// 		data = ret.Users
-// 	}
-
-// 	return
-// }
-
-// func (a *API) GetOAuth2User(agentID int, code string) (ou *OAuth2UserInfo, err error) {
-// 	var token string
-// 	token, err = a.c.GetAuthToken()
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	uri := fmt.Sprintf("%s?access_token=%s&agentid=%d&code=%s", urlOAuth2GetUser, token, agentID, code)
-
-// 	ou = new(OAuth2UserInfo)
-// 	err = a.c.GetJSON(uri, ou)
-
-// 	return
-// }
+	return
+}
