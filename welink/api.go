@@ -16,9 +16,11 @@ const (
 	urlUserList     = "https://open.welink.huaweicloud.com/api/contact/v1/user/users"
 	urlUserListSimp = "https://open.welink.huaweicloud.com/api/contact/v2/user/userid"
 	urlUserBulk     = "https://open.welink.huaweicloud.com/api/contact/v1/users/bulk"
+	urlUserStatus   = "https://open.welink.huaweicloud.com/api/contact/v1/users/status"
 
-	urlDeptList = "https://open.welink.huaweicloud.com/api/contact/v2/departments/list"
-	urlDeptSync = "https://open.welink.huaweicloud.com/api/contact/v2/departments/bulk"
+	urlDeptList   = "https://open.welink.huaweicloud.com/api/contact/v2/departments/list"
+	urlDeptSync   = "https://open.welink.huaweicloud.com/api/contact/v2/departments/bulk"
+	urlDeptStatus = "https://open.welink.huaweicloud.com/api/contact/v2/departments/status"
 )
 
 type API struct {
@@ -73,6 +75,21 @@ func (a *API) GetUser(uid, at string) (*User, error) {
 	return user, nil
 }
 
+// ListUser ...
+func (a *API) ListUser(deptID int) (data []User, err error) {
+	limit := 50
+	uri := fmt.Sprintf("%s?&deptCode=%d&pageSize=%d", urlUserList, deptID, limit)
+
+	var ret usersResponse
+	err = a.c.GetJSON(uri, &ret)
+
+	if err == nil {
+		data = ret.Users
+	}
+
+	return
+}
+
 func (a *API) ListDepartment(id int, recursive bool) (data Departments, err error) {
 
 	var recursiveflag int
@@ -103,35 +120,90 @@ func (a *API) ListDepartment(id int, recursive bool) (data Departments, err erro
 }
 
 // SyncDepartment ...
-func (a *API) SyncDepartment(data []DepartmentUp) error {
+func (a *API) SyncDepartment(data []DepartmentUp) (res []DeptRespItem, err error) {
 	var req deptBatchReq
 	req.Data = data
 
-	buf, err := json.Marshal(&req)
+	var buf []byte
+	buf, err = json.Marshal(&req)
 	if err != nil {
-		return err
+		return
 	}
 	var resp deptBatchResp
 	err = a.c.PostJSON(urlDeptSync, buf, &resp)
 	if err != nil {
 		logger().Infow("sync department fail", "err", err)
-		return err
+		return
 	}
+	res = resp.Data
 	logger().Infow("sync department ok", "resp", resp)
-	return nil
+	return
 }
 
-// ListUser ...
-func (a *API) ListUser(deptId int) (data []User, err error) {
-	limit := 50
-	uri := fmt.Sprintf("%s?&deptCode=%d&pageSize=%d", urlUserList, deptId, limit)
-
-	var ret usersResponse
-	err = a.c.GetJSON(uri, &ret)
-
-	if err == nil {
-		data = ret.Users
+// StatusDepartment ...
+func (a *API) StatusDepartment(data []DepartmentUp) (res []DeptRespItem, err error) {
+	var req deptStatusReq
+	for _, deptUp := range data {
+		req.Data = append(req.Data, deptStatusUp{deptUp.CorpDeptID})
 	}
 
+	var buf []byte
+	buf, err = json.Marshal(&req)
+	if err != nil {
+		return
+	}
+	var resp deptBatchResp
+	err = a.c.PostJSON(urlDeptStatus, buf, &resp)
+	if err != nil {
+		logger().Infow("status department fail", "err", err)
+		return
+	}
+	res = resp.Data
+	logger().Infow("status department ok", "resp", resp)
+	return
+}
+
+// SyncUser ...
+func (a *API) SyncUser(data []UserUp) (res []UserRespItem, err error) {
+	var req userBatchReq
+	req.Data = data
+
+	var buf []byte
+	buf, err = json.Marshal(&req)
+	if err != nil {
+		return
+	}
+	var resp userBatchResp
+	err = a.c.PostJSON(urlUserBulk, buf, &resp)
+	if err != nil {
+		logger().Infow("sync User fail", "err", err)
+		return
+	}
+	res = resp.Data
+	logger().Infow("sync User ok", "resp", resp)
+	return
+}
+
+// StatusUser ...
+func (a *API) StatusUser(data []UserUp) (res []UserRespItem, err error) {
+	var req userStatusReq
+	for _, userUp := range data {
+		req.Data = append(req.Data, userStatusUp{
+			CorpUID: userUp.CorpUID, Mobile: userUp.Mobile, Email: userUp.Email})
+	}
+
+	var buf []byte
+	buf, err = json.Marshal(&req)
+	if err != nil {
+		return
+	}
+	var resp userBatchResp
+	err = a.c.PostJSON(urlUserStatus, buf, &resp)
+	if err != nil {
+		logger().Infow("status User fail", "err", err)
+		return
+	}
+	res = resp.Data
+	logger().Infow("status User ok", "resp", resp)
 	return
 }

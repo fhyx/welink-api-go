@@ -42,19 +42,22 @@ func (z *Gender) UnmarshalJSON(b []byte) (err error) {
 		*z = Unknown
 		return
 	}
+	*z = ParseGender(b)
+	return
+}
+
+// ParseGender Male: mM1男; Female: fF2女
+func ParseGender(b []byte) Gender {
 	r := bytes.Runes(b)
 	if r[0] == '"' && r[len(r)-1] == '"' {
 		r = r[1 : len(r)-1]
 	}
 	switch c := r[0]; c {
 	case 'm', 'M', '1', '男':
-		*z = Male
+		return Male
 	case 'f', 'F', '2', '女':
-		*z = Female
-	case 'u', 'U', '0':
-		*z = Unknown
+		return Female
 	default:
-		err = ErrInvalidGender
+		return Unknown
 	}
-	return
 }

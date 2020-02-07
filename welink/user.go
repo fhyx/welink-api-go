@@ -54,16 +54,15 @@ func (s Status) String() string {
 // "creationTime": "2018-05-03 13:58:02",
 // "lastUpdatedTime": "2018-05-03 13:58:02"
 type User struct {
-	CorpUID      string        `json:"corpUserId,omitempty"`
-	CorpDeptID   string        `json:"corpDeptCode,omitempty"`
-	UserID       string        `json:"userId"`
-	NameCN       string        `json:"userNameCn"`
-	NameEN       string        `json:"userNameEn"`
-	DepartmentID int           `json:"deptCode,string,omitempty"`
-	Title        string        `json:"position,omitempty"`
-	Mobile       string        `json:"mobileNumber,omitempty"`
-	Email        string        `json:"userEmail,omitempty"`
-	Tel          string        `json:"phoneNumber,omitempty"`
+	CorpUID      string        `json:"corpUserId"`                // required
+	CorpDeptID   int           `json:"corpDeptCode,string"`       // required
+	UserID       string        `json:"userId"`                    // required
+	NameCN       string        `json:"userNameCn"`                // required
+	NameEN       string        `json:"userNameEn"`                // required
+	DepartmentID int           `json:"deptCode,string,omitempty"` // deptCode at welink
+	Mobile       string        `json:"mobileNumber"`              // required
+	Phone        string        `json:"phoneNumber,omitempty"`     // required
+	Email        string        `json:"userEmail"`                 // required
 	Gender       gender.Gender `json:"sex,string,omitempty"`
 	Status       Status        `json:"userStatus,omitempty"`
 	Remark       string        `json:"remark,emitempty"`
@@ -71,6 +70,11 @@ type User struct {
 	Activated    uint8         `json:"isActivated,omitempty"`
 	Createds     string        `json:"creationTime,omitempty"`
 	Updateds     string        `json:"lastUpdatedTime,omitempty"`
+
+	IsOpenAccount      int `json:"isOpenAccount,string,omitempty"`      // required
+	Valid              int `json:"valid,string,string"`                 // required
+	IsHideMobileNumber int `json:"isHideMobileNumber,string,omitempty"` // 1 public default, 2 hide
+	OrderInDepts       int `json:"orderInDepts,string"`
 }
 
 func (u User) IsActived() bool {
@@ -86,4 +90,31 @@ type usersResponse struct {
 
 	Total int    `json:"total"`
 	Users []User `json:"data"`
+}
+
+type UserUp = User
+
+type userBatchReq struct {
+	Data []UserUp `json:"personInfo"`
+}
+
+// UserRespItem ...
+type UserRespItem struct {
+	client.Error
+
+	CorpUID string `json:"corpUserId"`
+}
+
+type userBatchResp struct {
+	Data []UserRespItem `json:"data"`
+}
+
+type userStatusUp struct {
+	CorpUID string `json:"corpUserId,omitempty"`
+	Mobile  string `json:"mobileNumber,omitempty"`
+	Email   string `json:"userEmail,omitempty"`
+}
+
+type userStatusReq struct {
+	Data []userStatusUp `json:"personInfo"`
 }

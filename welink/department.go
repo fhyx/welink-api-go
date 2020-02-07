@@ -28,12 +28,23 @@ type deptBatchReq struct {
 	Data []DepartmentUp `json:"deptInfo"`
 }
 
-type deptBatchResp struct {
-	Data struct {
-		client.Error
+// DeptRespItem ...
+type DeptRespItem struct {
+	client.Error
 
-		CorpDeptID int `json:"corpDeptCode,string"`
-	} `json:"data"`
+	CorpDeptID int `json:"corpDeptCode,string"`
+}
+
+type deptBatchResp struct {
+	Data []DeptRespItem `json:"data"`
+}
+
+type deptStatusUp struct {
+	CorpDeptID int `json:"corpDeptCode,string"`
+}
+
+type deptStatusReq struct {
+	Data []deptStatusUp `json:"deptInfo"`
 }
 
 // Department 部门
