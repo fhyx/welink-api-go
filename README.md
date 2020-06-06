@@ -14,7 +14,7 @@ WELINK_TEST_UID='for unit test only'
 
 ```go
 
-import "github.com/fhyx/welink-api-go/welink"
+import "fhyx.online/welink-api-go/welink"
 
 
 api := NewAPI() // or New(appId, appSecret)

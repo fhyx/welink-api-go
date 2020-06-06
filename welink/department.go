@@ -1,7 +1,7 @@
 package welink
 
 import (
-	"github.com/fhyx/welink-api-go/client"
+	"fhyx.online/welink-api-go/client"
 )
 
 // DepartmentUp 部门更新请求对象

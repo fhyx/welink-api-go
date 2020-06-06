@@ -3,8 +3,8 @@ package welink
 import (
 	// "time"
 
-	"github.com/fhyx/welink-api-go/client"
-	"github.com/fhyx/welink-api-go/gender"
+	"fhyx.online/welink-api-go/client"
+	"fhyx.online/welink-api-go/gender"
 )
 
 // Status 状态

@@ -7,7 +7,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/fhyx/welink-api-go/log"
+	"fhyx.online/welink-api-go/log"
 )
 
 var (

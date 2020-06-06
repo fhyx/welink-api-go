@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/fhyx/welink-api-go/client"
+	"fhyx.online/welink-api-go/client"
 )
 
 const (
